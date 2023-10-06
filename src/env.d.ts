@@ -23,4 +23,12 @@ declare global {
   interface Document {
     ENV: ImportMetaEnv
   }
+
+  interface Window {
+    ethereum?: EthereumProvider
+    solflare?: {
+      isSolflare: boolean
+    }
+    solana?: unknown
+  }
 }

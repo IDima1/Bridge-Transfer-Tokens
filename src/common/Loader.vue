@@ -4,13 +4,12 @@
       <spinner />
     </template>
     <template v-else-if="scheme === 'skeleton'">
-      <skeleton v-bind="$attrs" />
+      <skeleton />
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-/* create skeletons */
 import { Spinner, Skeleton } from '@/common/loaders'
 
 withDefaults(
@@ -25,7 +24,6 @@ withDefaults(
 
 <style lang="scss" scoped>
 .loader {
-  overflow: hidden;
   display: grid;
   place-items: center;
 }

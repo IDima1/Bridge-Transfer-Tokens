@@ -1,6 +1,6 @@
 import { computed, UnwrapNestedRefs } from 'vue'
 import useVuelidate, { ChildStateLeafs, ValidationArgs } from '@vuelidate/core'
-import get from 'lodash/get'
+import { get } from 'lodash-es'
 
 export const useFormValidation = (
   state: UnwrapNestedRefs<ChildStateLeafs>,

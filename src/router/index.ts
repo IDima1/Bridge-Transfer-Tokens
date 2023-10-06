@@ -11,17 +11,17 @@ import { ROUTE_NAMES } from '@/enums'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/:catchAll(.*)',
-    redirect: { name: ROUTE_NAMES.uiKit },
+    redirect: { name: ROUTE_NAMES.bridgeTransfer },
   },
   {
-    path: '/ui-kit',
-    name: ROUTE_NAMES.uiKit,
-    component: () => import('@/pages/UiKitPage.vue'),
+    path: '/bridge/transfer',
+    name: ROUTE_NAMES.bridgeTransfer,
+    component: () => import('@/pages/BridgePage.vue'),
   },
   {
-    path: '/complex-form',
-    name: ROUTE_NAMES.complexForm,
-    component: () => import('@/forms/ComplexForm.vue'),
+    path: '/bridge/redeem',
+    name: ROUTE_NAMES.bridgeRedeem,
+    component: () => import('@/pages/BridgePage.vue'),
   },
 ]
 

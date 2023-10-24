@@ -1,6 +1,5 @@
 export * from './useProvider'
 export * from './use-bridge-form'
-export * from './use-erc20'
 export * from './use-form-validation'
 export * from './use-form'
 export * from './use-notifications'

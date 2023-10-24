@@ -81,6 +81,9 @@ export default defineConfig(({ mode }) => {
         '@static': `${root}/../static`,
       },
     },
+    optimizeDeps: {
+      esbuildOptions: { target: "es2020", supported: { bigint: true } },
+    },
     /**
      * @description Enable configuration for polyfills
      *

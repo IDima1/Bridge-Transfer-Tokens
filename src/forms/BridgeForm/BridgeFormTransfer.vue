@@ -97,11 +97,13 @@
                 {{ $t('bridge-form-transfer.balance-loading-error-msg') }}
               </template>
               <template v-else>
-                {{
-                  $t('bridge-form-transfer.balance-lbl', {
-                    value: formatAmount(selectedTokenBalance?.amount),
-                  })
-                }}
+                <div :style="{ opacity: isFormDisabled ? '0.5' : '1' }">
+                  {{
+                    $t('bridge-form-transfer.balance-lbl', {
+                      value: formatAmount(selectedTokenBalance?.amount),
+                    })
+                  }}
+                </div>
               </template>
             </template>
             <template v-else>
@@ -128,7 +130,10 @@
             </template>
           </input-field>
         </div>
-        <collapse :is-shown="Boolean(nftDetails?.image)">
+        <collapse
+          :is-shown="Boolean(nftDetails?.image)"
+          :style="{ opacity: isFormDisabled ? '0.7' : '1' }"
+        >
           <div class="bridge-form-transfer__nft">
             <img
               class="bridge-form-transfer__nft-image"
@@ -147,7 +152,6 @@
           </div>
         </collapse>
       </template>
-
       <input-field
         v-model="receiverAddress"
         class="bridge-form-transfer__field"
@@ -160,7 +164,6 @@
         "
       />
     </template>
-
     <div class="bridge-form-transfer__actions">
       <template v-if="isSubmitting || txHash || finishedFlowTx">
         <status-alert
@@ -212,9 +215,7 @@
             "
             :subtitle="
               finishedFlowTx
-                ? $t(
-                    'bridge-form-transfer.redeeming-status-success-subtitle',
-                  )
+                ? $t('bridge-form-transfer.redeeming-status-success-subtitle')
                 : $t('bridge-form-transfer.redeeming-status-subtitle')
             "
             :status="finishedFlowTx && !isSubmitting ? 'success' : 'disabled'"
@@ -259,9 +260,7 @@
             <template v-if="isProviderReceiverChainValid">
               <status-alert
                 class="bridge-form-transfer__status-alert"
-                :title="
-                  $t('bridge-form-transfer.start-redeem-status-title')
-                "
+                :title="$t('bridge-form-transfer.start-redeem-status-title')"
                 :subtitle="
                   $t('bridge-form-transfer.start-redeem-status-subtitle')
                 "
@@ -277,7 +276,9 @@
             </template>
             <template v-else>
               <status-alert
-                v-if="providerReceiver.selectedAddress.value !== receiverAddress"
+                v-if="
+                  providerReceiver.selectedAddress.value !== receiverAddress
+                "
                 class="bridge-form-transfer__status-alert"
                 :title="
                   $t('bridge-form-transfer.receiver-invalid-status-title')
@@ -292,10 +293,14 @@
                 <status-alert
                   class="bridge-form-transfer__status-alert"
                   :title="
-                    $t('bridge-form-transfer.chain-recipient-invalid-status-title')
+                    $t(
+                      // eslint-disable-next-line max-len
+                      'bridge-form-transfer.chain-recipient-invalid-status-title',
+                    )
                   "
                   :subtitle="
                     $t(
+                      // eslint-disable-next-line max-len
                       'bridge-form-transfer.chain-recipient-invalid-status-subtitle',
                     )
                   "
@@ -331,9 +336,7 @@
           <template v-else>
             <status-alert
               class="bridge-form-transfer__status-alert"
-              :title="
-                $t('bridge-form-transfer.connect-receiver-status-title')
-              "
+              :title="$t('bridge-form-transfer.connect-receiver-status-title')"
               :subtitle="
                 $t('bridge-form-transfer.connect-receiver-status-subtitle')
               "

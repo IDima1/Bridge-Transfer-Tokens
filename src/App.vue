@@ -11,41 +11,24 @@
 
 <script lang="ts" setup>
 import { AppNavbar } from '@/common'
-
+import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
 import { useNotifications } from '@/composables'
 import { config } from '@config'
-import { bus, BUS_EVENTS, ErrorHandler } from '@/helpers'
-import { NotificationPayload } from '@/types'
+import { useWeb3ProvidersStore } from '@/store'
 
 const isAppInitialized = ref(false)
-
-const { showToast } = useNotifications()
+const web3ProviderStore = useWeb3ProvidersStore()
 
 const init = async () => {
   try {
+    useNotifications()
+    await web3ProviderStore.detectProviders()
     document.title = config.APP_NAME
-
-    initNotifications()
   } catch (error) {
     ErrorHandler.process(error)
   }
   isAppInitialized.value = true
-}
-
-const initNotifications = () => {
-  bus.on(BUS_EVENTS.success, payload =>
-    showToast('success', payload as NotificationPayload),
-  )
-  bus.on(BUS_EVENTS.warning, payload =>
-    showToast('warning', payload as NotificationPayload),
-  )
-  bus.on(BUS_EVENTS.error, payload =>
-    showToast('error', payload as NotificationPayload),
-  )
-  bus.on(BUS_EVENTS.info, payload =>
-    showToast('info', payload as NotificationPayload),
-  )
 }
 
 init()

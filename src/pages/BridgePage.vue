@@ -32,7 +32,7 @@
       </template>
     </template>
     <template v-else>
-      <loader scheme="skeleton" />
+      <loader class="bridge-page__loader" />
     </template>
   </div>
 </template>
@@ -84,5 +84,12 @@ init()
 
 .bridge-page__subtitle {
   color: var(--text-secondary-main);
+}
+
+.bridge-page__loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: toRem(96);
 }
 </style>

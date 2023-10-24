@@ -220,13 +220,13 @@ export const useBridgeForm = () => {
     }
 
     if (persistedConnectedProviders.value.providerSenderName) {
-      const designatedproviderSender = designatedProviders.value.find(
+      const designatedProviderSender = designatedProviders.value.find(
         el => el.name === persistedConnectedProviders.value.providerSenderName,
       )
 
-      if (designatedproviderSender) {
+      if (designatedProviderSender) {
         try {
-          await providerSender.init(designatedproviderSender)
+          await providerSender.init(designatedProviderSender)
           await providerSender.connect()
         } catch (error) {
           await providerSender.disconnect()
@@ -234,14 +234,14 @@ export const useBridgeForm = () => {
       }
     }
     if (persistedConnectedProviders.value.providerReceiverName) {
-      const designatedproviderReceiver = designatedProviders.value.find(
+      const designatedProviderReceiver = designatedProviders.value.find(
         el =>
           el.name === persistedConnectedProviders.value.providerReceiverName,
       )
 
-      if (designatedproviderReceiver) {
+      if (designatedProviderReceiver) {
         try {
-          await providerReceiver.init(designatedproviderReceiver)
+          await providerReceiver.init(designatedProviderReceiver)
           await providerReceiver.connect()
         } catch (error) {
           await providerReceiver.disconnect()
@@ -286,11 +286,11 @@ export const useBridgeForm = () => {
       },
     )
 
-    // FIXME
     if (data.type === 'evm_transaction') {
       const tx = (await providerSender.signAndSendTx(
         data.tx_body,
       )) as EthTransactionResponse
+
       txHash.value = tx.hash
     } else if (data.type === 'processed_transaction') {
       txHash.value = data.id

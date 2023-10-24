@@ -60,7 +60,7 @@
     "amount-lbl": "Amount",
     "nft-id-lbl": "NFT ID",
     "transfer-btn": "Transfer",
-    
+
     "provider-modal-title": "Connect Wallet",
     "provider-modal-subtitle": "This is the reason why you should connect your wallet",
 
@@ -71,11 +71,10 @@
     "locking-status-subtitle": "This is a description of the process that is going on right now.",
     "chain-sender-invalid-status-title": "Transfering to the Bridge",
     "chain-sender-invalid-status-subtitle": "Connected wrong chain",
-    
+
     "locked-status-success-title": "Transfering to the Bridge",
     "locked-status-success-subtitle": "Your token was locked on bridge, you can check tx by clicking {link}",
     "locked-status-success-link": "this link",
-    
 
     "connect-receiver-status-title": "Redeem",
     "connect-receiver-status-subtitle": "This is a description of the process that is going on right now.",
@@ -110,7 +109,7 @@
     "try-redeem-status-subtitle": "Waiting for confirmation",
     "start-redeem-status-title": "Redeeming",
     "start-redeem-status-subtitle": "Need a confirmation from receiver to redeem",
-    
+
     "chain-recipient-invalid-status-title": "Redeeming",
     "chain-recipient-invalid-status-subtitle": "Connected wrong chain",
     "switch-chain-btn": "Switch chain",
@@ -121,10 +120,9 @@
     "redeem-status-success-title": "Redeeming",
     "redeem-status-success-subtitle": "Your token was redeemed on your wallet, you can check tx by clicking {link}",
     "redeem-another-btn": "Redeem another",
-    
+
     "redeeming-status-title": "Redeeming",
     "redeeming-status-subtitle": "Waiting for tx confirmation",
     "redeeming-success-link": "this link"
-    
   }
 }

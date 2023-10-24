@@ -122,7 +122,10 @@
                   $t('bridge-form-redeem.chain-recipient-invalid-status-title')
                 "
                 :subtitle="
-                  $t('bridge-form-redeem.chain-recipient-invalid-status-subtitle')
+                  $t(
+                    // eslint-disable-next-line max-len
+                    'bridge-form-redeem.chain-recipient-invalid-status-subtitle',
+                  )
                 "
                 :status="'error'"
                 :icon-name="$icons.blockchainNodes"
@@ -131,6 +134,7 @@
                 size="large"
                 class="bridge-form-redeem__action-btn"
                 :text="$t('bridge-form-redeem.switch-chain-btn')"
+                :icon-left="$icons.refresh"
                 @click="
                   trySwitchChain(
                     providerReceiver,

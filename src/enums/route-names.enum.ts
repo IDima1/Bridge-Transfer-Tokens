@@ -1,5 +1,5 @@
 export enum ROUTE_NAMES {
   app = 'app',
-  uiKit = 'ui-kit',
-  complexForm = 'complex-form',
+  bridgeTransfer = 'bridge-transfer',
+  bridgeRedeem = 'bridge-redeem',
 }

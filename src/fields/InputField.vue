@@ -1,26 +1,25 @@
 <template>
   <div class="input-field" :class="inputClasses">
     <div class="input-field__input-wrp">
-      <div
-        v-if="$slots.nodeLeft"
-        ref="nodeLeftWrp"
-        class="input-field__node-left-wrp"
-      >
+      <div v-if="$slots.nodeLeft" class="input-field__node-left-wrp">
         <slot name="nodeLeft" />
       </div>
       <input
-        ref="inputEl"
         class="input-field__input"
         :id="`input-field--${uid}`"
         v-bind="$attrs"
         v-on="listeners"
         :value="modelValue"
         :placeholder="!label ? placeholder : ' '"
-        :tabindex="isDisabled || isReadonly ? -1 : ($attrs.tabindex as number)"
+        :tabindex="isDisabled || isReadonly ? -1 : $attrs.tabindex"
         :type="inputType"
         :min="min"
         :max="max"
         :disabled="isDisabled || isReadonly"
+      />
+      <span
+        class="input-field__focus-indicator"
+        v-if="scheme === 'secondary'"
       />
       <label
         v-if="label"
@@ -31,25 +30,24 @@
       </label>
       <div
         v-if="$slots.nodeRight || isPasswordType || props.errorMessage"
-        ref="nodeRightWrp"
         class="input-field__node-right-wrp"
       >
-        <slot v-if="$slots.nodeRight" name="nodeRight" />
         <button
-          v-else-if="isPasswordType"
+          v-if="isPasswordType"
           type="button"
           @click="isPasswordShown = !isPasswordShown"
         >
           <icon
             class="input-field__password-icon"
-            :name="isPasswordShown ? ICON_NAMES.eye : ICON_NAMES.eyeOff"
+            :name="isPasswordShown ? $icons.eye : $icons.eyeOff"
           />
         </button>
         <icon
           v-else-if="props.errorMessage"
           class="input-field__error-icon"
-          :name="ICON_NAMES.exclamationCircle"
+          :name="$icons.exclamationCircle"
         />
+        <slot v-else name="nodeRight" />
       </div>
     </div>
     <transition
@@ -60,30 +58,28 @@
       <span v-if="errorMessage" class="input-field__err-msg">
         {{ errorMessage }}
       </span>
-      <span v-else-if="note" class="input-field__note-msg">
-        {{ note }}
-      </span>
     </transition>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { BN, DECIMALS } from '@distributedlab/tools'
-import { computed, onMounted, ref, useAttrs, useSlots } from 'vue'
-
 import { Icon } from '@/common'
-import { ICON_NAMES } from '@/enums'
-import { v4 as uuidv4 } from 'uuid'
+
+import { BN } from '@/utils'
+import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
+
+type INPUT_TYPES = 'text' | 'number' | 'password'
+
+type SCHEMES = 'primary' | 'secondary'
 
 const props = withDefaults(
   defineProps<{
-    scheme?: 'primary'
+    scheme?: SCHEMES
     modelValue: string | number
     label?: string
     placeholder?: string
-    type?: 'text' | 'number' | 'password'
+    type?: INPUT_TYPES
     errorMessage?: string
-    note?: string
   }>(),
   {
     scheme: 'primary',
@@ -91,7 +87,6 @@ const props = withDefaults(
     label: '',
     placeholder: ' ',
     errorMessage: '',
-    note: '',
   },
 )
 
@@ -103,23 +98,15 @@ const attrs = useAttrs()
 
 const slots = useSlots()
 
-const uid = uuidv4()
-
-const inputEl = ref<HTMLInputElement>()
-const nodeLeftWrp = ref<HTMLDivElement>()
-const nodeRightWrp = ref<HTMLDivElement>()
+const uid = getCurrentInstance()?.uid
 
 const isPasswordShown = ref(false)
 
 const isNumberType = computed(() => props.type === 'number')
 const isPasswordType = computed(() => props.type === 'password')
 
-const min = computed((): string =>
-  !isNaN(Number(attrs?.min)) && attrs?.min !== '' ? (attrs.min as string) : '',
-)
-const max = computed((): string =>
-  !isNaN(Number(attrs?.max)) && attrs?.max !== '' ? (attrs.max as string) : '',
-)
+const min = computed((): string => (attrs?.min as string) || '')
+const max = computed((): string => (attrs?.max as string) || '')
 
 const isDisabled = computed(() =>
   ['', 'disabled', true].includes(attrs.disabled as string | boolean),
@@ -132,7 +119,6 @@ const isReadonly = computed(() =>
 const listeners = computed(() => ({
   input: (event: Event) => {
     const eventTarget = event.target as HTMLInputElement
-
     if (isNumberType.value) {
       eventTarget.value = normalizeRange(normalizeNumber(eventTarget.value))
     }
@@ -162,28 +148,6 @@ const inputType = computed(() => {
   return 'text'
 })
 
-onMounted(() => {
-  if (!inputEl.value) return
-
-  if (slots?.nodeLeft && nodeLeftWrp.value) {
-    inputEl.value?.style.setProperty(
-      'padding-left',
-      `calc(${
-        nodeLeftWrp.value?.offsetWidth || 0
-      }px + var(--field-padding-left) * 2)`,
-    )
-  }
-
-  if (slots?.nodeRight && nodeRightWrp.value) {
-    inputEl.value?.style.setProperty(
-      'padding-right',
-      `calc(${
-        nodeRightWrp.value?.offsetWidth || 0
-      }px + var(--field-padding-right) * 2)`,
-    )
-  }
-})
-
 const normalizeNumber = (value: string) => {
   return isNaN(Number(value)) ? props.modelValue : value
 }
@@ -191,23 +155,17 @@ const normalizeNumber = (value: string) => {
 const normalizeRange = (value: string | number): string => {
   let result = value
 
-  if (
-    String(min.value) &&
-    BN.fromRaw(value, DECIMALS.WEI).lt(BN.fromRaw(min.value, DECIMALS.WEI))
-  ) {
+  if (min.value && new BN(value).compare(min.value) < 0) {
     result = min.value
-  } else if (
-    String(max.value) &&
-    BN.fromRaw(value, DECIMALS.WEI).gt(BN.fromRaw(max.value, DECIMALS.WEI))
-  ) {
+  } else if (max.value && new BN(value).compare(max.value) > 0) {
     result = max.value
   }
 
   return result as string
 }
 
-const setHeightCSSVar = (element: Element) => {
-  ;(element as HTMLElement).style.setProperty(
+const setHeightCSSVar = (element: HTMLElement) => {
+  element.style.setProperty(
     '--field-error-msg-height',
     `${element.scrollHeight}px`,
   )
@@ -244,16 +202,32 @@ $z-index-side-nodes: 1;
 
   @include field-label;
 
+  transition-property: all;
+
+  .input-field--secondary & {
+    padding: 0;
+  }
+
+  .input-field--secondary.input-field--node-left & {
+    left: calc(var(--field-padding-left) * 3);
+  }
+
   .input-field__input:not(:placeholder-shown) ~ & {
     top: 0;
     color: var(--field-text);
     border-color: var(--field-border-hover);
+
+    .input-field--secondary & {
+      transform: translateY(25%);
+    }
   }
 
   .input-field__input:not(:focus):placeholder-shown ~ & {
     top: 50%;
-
-    @include field-label;
+    color: var(--field-label);
+    font-size: toRem(16);
+    font-weight: 400;
+    line-height: 1.3;
 
     .input-field--node-left & {
       left: calc(var(--field-padding-left) * 3);
@@ -268,6 +242,11 @@ $z-index-side-nodes: 1;
   .input-field__input:not([disabled]):focus ~ & {
     color: var(--field-label-focus);
     font-weight: 700;
+
+    .input-field--secondary & {
+      transform: translateY(25%);
+      color: var(--primary-main);
+    }
   }
 
   .input-field__input:not(:focus):placeholder-shown:-webkit-autofill ~ & {
@@ -280,6 +259,11 @@ $z-index-side-nodes: 1;
     .input-field--node-left & {
       left: calc(var(--field-padding-left) * 3);
     }
+  }
+
+  /* stylelint-disable-next-line */
+  .input-field--secondary & {
+    background: var(--field-bg-secondary);
   }
 }
 
@@ -297,8 +281,43 @@ $z-index-side-nodes: 1;
 
   @include field-text;
 
+  & + .input-field__focus-indicator {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: toRem(-2);
+      left: 50%;
+      transform: translateX(-50%);
+      height: toRem(2);
+      width: 0;
+      background: var(--primary-main);
+      transition: width calc(var(--field-transition-duration) + 0.3s);
+
+      .input-field--error & {
+        background: var(--field-error);
+      }
+    }
+  }
+
   .input-field--primary & {
     @include field-border;
+  }
+
+  .input-field--secondary & {
+    position: relative;
+    background: var(--field-bg-secondary);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
+      0 toRem(2) 0 0 var(--field-border);
+    padding: calc(var(--field-padding-top) + #{toRem(12)})
+      var(--field-padding-right) var(--field-padding-bottom)
+      var(--field-padding-left);
   }
 
   transition-property: all;
@@ -343,10 +362,24 @@ $z-index-side-nodes: 1;
     padding-right: calc(var(--field-padding-right) * 3);
   }
 
+  &:not(:placeholder-shown) {
+    .input-field--secondary & {
+      & + .input-field__focus-indicator:after {
+        width: 100%;
+      }
+    }
+  }
+
   .input-field--error.input-field--primary & {
     border-color: var(--field-error);
     box-shadow: inset 0 0 0 toRem(50) var(--field-bg-primary),
       0 0 0 toRem(1) var(--field-error);
+  }
+
+  .input-field--error.input-field--secondary & {
+    border-color: var(--field-error);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
+      0 toRem(2) 0 0 var(--field-error);
   }
 
   &:not([disabled]):focus {
@@ -355,6 +388,12 @@ $z-index-side-nodes: 1;
       box-shadow: inset 0 0 0 toRem(50) var(--field-bg-primary),
         0 0 0 toRem(1) var(--field-border-focus);
       border-color: var(--field-border-focus);
+    }
+
+    .input-field--secondary & {
+      & + .input-field__focus-indicator:after {
+        width: 100%;
+      }
     }
   }
 
@@ -401,13 +440,8 @@ $z-index-side-nodes: 1;
   height: toRem(18);
 }
 
-.input-field__err-msg,
-.input-field__note-msg {
+.input-field__err-msg {
   @include field-error;
-}
-
-.input-field__note-msg {
-  color: var(--text-primary-light);
 }
 
 .input-field__err-msg-transition-enter-active {

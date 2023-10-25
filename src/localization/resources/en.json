@@ -4,7 +4,32 @@
     "field-error_email": "Field must be a valid email"
   },
   "errors": {
-    "default": "Something went wrong"
+    "default": "Oops... Something went wrong",
+    "provider-user-rejected-request": "User rejected request.",
+    "provider-unauthorized": "The requested method and/or account has not been authorized by the user.",
+    "provider-unsupported-method": "The Provider does not support the requested method.",
+    "provider-disconnected": "The Provider is disconnected from all chains.",
+    "provider-chain-disconnected": "The Provider is not connected to the requested chain.",
+    "provider-parse-error": "Invalid JSON standard",
+    "provider-invalid-request": "JSON is not a valid request object standard",
+    "provider-method-not-found": "Method does not exist standard",
+    "provider-invalid-params": "Invalid method parameters standard",
+    "provider-internal-error": "Internal JSON-RPC error standard",
+    "provider-invalid-input": "Missing or invalid parameters non-standard",
+    "provider-resource-not-found": "equested resource not found non-standard",
+    "provider-resource-unavailable": "Requested resource not available non-standard",
+    "provider-transaction-rejected": "Transaction creation failed non-standard",
+    "provider-method-not-supported": "Method is not implemented non-standard",
+    "provider-limit-exceeded": "Request exceeds defined limit non-standard",
+    "provider-json-rpc-version-not-supported": "Version of JSON-RPC protocol is not supported non-standard",
+    "provider-wrapper-method-not-found": "provider not exist or hasn't this method",
+    "bad-request-errors": {
+      "not-confirmed":  "Tx not confirmed",
+      "invalid-transaction": "Invalid Transaction",
+      "already-redeemed":  "Token already redeemed",
+      "insufficient-lp-balance": "Insufficient balance of token",
+      "tx-not-found": "Tx with this hash not found, try different network or tx hash"
+    }
   },
   "notification": {
     "default-title-success": "Success",
@@ -18,21 +43,86 @@
     "default-message-info": "Something is happening. Just want you to know that",
     "default-message-default": "Just a message"
   },
-  "login-form": {
-    "login-lbl": "Login",
-    "password-lbl": "Password",
-    "login-success-msg": "Access granted",
-    "submit-btn": "Submit"
+  "bridge-page": {
+    "title": "Bridge",
+    "subtitle": "Here will be a description of what you can do in this tab",
+    "loading-error-msg": "Ooops... Something went wrong",
+    "no-data-msg": "No data found, please retry",
+    "transfer-link": "Transfer",
+    "redeem-link": "Redeem"
   },
-  "ui-kit-page": {
-    "button": "Button",
-    "some-placeholder": "placeholder",
-    "some-label": "label",
-    "some-error-message": "error-message",
-    "modal-btn": "Open modal",
-    "accordion-btn": "Toggle Accordion",
-    "collapse-text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    "loading-error-msg": "Oops, something went wrong",
-    "no-data-msg": "Empty data, please add new"
+  "bridge-form-transfer": {
+    "token-lbl": "Select Token",
+    "chain-sender-lbl": "Chain From",
+    "chain-recipient-lbl": "Chain To",
+    "balance-lbl": "Your Balance: {value}",
+    "receiver-lbl": "Receiver",
+    "amount-lbl": "Amount",
+    "nft-id-lbl": "NFT ID",
+    "transfer-btn": "Transfer",
+
+    "provider-modal-title": "Connect Wallet",
+    "provider-modal-subtitle": "This is the reason why you should connect your wallet",
+
+    "nft-load-failed-msg": "Oops... Can't load NFT by this id",
+    "nft-not-found-msg": "No NFT found, please retry",
+
+    "locking-status-title": "Transfering to the Bridge",
+    "locking-status-subtitle": "This is a description of the process that is going on right now.",
+    "chain-sender-invalid-status-title": "Transfering to the Bridge",
+    "chain-sender-invalid-status-subtitle": "Connected wrong chain",
+
+    "locked-status-success-title": "Transfering to the Bridge",
+    "locked-status-success-subtitle": "Your token was locked on bridge, you can check tx by clicking {link}",
+    "locked-status-success-link": "this link",
+
+    "connect-receiver-status-title": "Redeem",
+    "connect-receiver-status-subtitle": "This is a description of the process that is going on right now.",
+    "receiver-invalid-status-title": "Redeem",
+    "receiver-invalid-status-subtitle": "Please, connect receiver account",
+    "chain-recipient-invalid-status-title": "Redeem",
+    "chain-recipient-invalid-status-subtitle": "Connected wrong chain",
+    "start-redeem-status-title": "Redeem",
+    "start-redeem-status-subtitle": "This is a description of the process that is going on right now.",
+    "redeeming-status-title": "Redeem",
+    "redeeming-status-subtitle": "Please, wait a second...",
+    "redeeming-status-success-title": "Redeemed",
+    "redeeming-status-success-subtitle": "Your token was successfully redeemed on your wallet, you can check tx by clicking {link}",
+    "redeeming-success-link": "this link",
+    "redeem-btn": "Redeem",
+
+    "switch-chain-btn": "Switch Chain",
+    "disconnect-provider-btn": "Disconnect {address}",
+    "connect-provider-btn": "Connect provider",
+    "transfer-another-btn": "Transfer another",
+    "balance-loading-error-msg": "Couldn't load balance",
+    "funds-not-enough-msg": "The specified number of tokens cannot exceed your current balance",
+    "receiver-invalid-msg": "The address is not valid"
+  },
+  "bridge-form-redeem": {
+    "chain-sender-lbl": "Chain From",
+    "token-lbl": "Token",
+    "tx-hash-lbl": "Transaction Hash",
+    "submit-btn": "Redeem",
+
+    "try-redeem-status-title": "Redeeming",
+    "try-redeem-status-subtitle": "Waiting for confirmation",
+    "start-redeem-status-title": "Redeeming",
+    "start-redeem-status-subtitle": "Need a confirmation from receiver to redeem",
+
+    "chain-recipient-invalid-status-title": "Redeeming",
+    "chain-recipient-invalid-status-subtitle": "Connected wrong chain",
+    "switch-chain-btn": "Switch chain",
+
+    "disconnect-provider-btn": "Disconnect {address}",
+    "connect-provider-btn": "Connect provider",
+
+    "redeem-status-success-title": "Redeeming",
+    "redeem-status-success-subtitle": "Your token was redeemed on your wallet, you can check tx by clicking {link}",
+    "redeem-another-btn": "Redeem another",
+
+    "redeeming-status-title": "Redeeming",
+    "redeeming-status-subtitle": "Waiting for tx confirmation",
+    "redeeming-success-link": "this link"
   }
 }

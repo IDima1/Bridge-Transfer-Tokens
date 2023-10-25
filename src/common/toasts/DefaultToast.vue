@@ -96,14 +96,14 @@ const toastIcon = computed(() => props.iconName || ICON_NAMES.checkCircle)
   line-height: 1.5;
   font-weight: 500;
   letter-spacing: toRem(0.1);
-  color: var(--text-primary-main);
+  color: var(--text-primary-invert-main);
 }
 
 .default-toast__message {
   font-size: toRem(14);
   line-height: 1.5;
   letter-spacing: toRem(0.25);
-  color: var(--text-secondary-main);
+  color: var(--text-primary-invert-main);
   width: toRem(230);
 
   @include respond-to(xsmall) {

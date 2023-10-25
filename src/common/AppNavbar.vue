@@ -1,35 +1,36 @@
 <template>
   <div class="app-navbar">
     <app-logo class="app-navbar__logo" />
-
+    <icon class="app-navbar__monogram" :name="$icons.monogram" />
+    <div class="app-navbar__info">
+      <h4 class="app-navbar__wallet-name">
+        {{ `Wallet name` }}
+      </h4>
+      <h5 class="app-navbar__address">
+        {{ `0x07...16F6` }}
+      </h5>
+    </div>
     <app-button
-      class="app-navbar__link"
-      :scheme="'flat'"
-      :text="$routes.uiKit"
-      :route="{ name: $routes.uiKit }"
-    />
-
-    <app-button
-      class="app-navbar__link"
-      :scheme="'flat'"
-      :text="$routes.complexForm"
-      :route="{ name: $routes.complexForm }"
+      class="app-navbar__settings"
+      size="small"
+      :scheme="'none'"
+      :icon-right="$icons.settings"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { AppLogo } from '@/common'
-import AppButton from '@/common/AppButton.vue'
+import { AppLogo, AppButton, Icon } from '@/common'
 </script>
 
 <style lang="scss" scoped>
 .app-navbar {
   display: flex;
   align-items: center;
-  gap: toRem(24);
-  padding: toRem(24) var(--app-padding-right) toRem(24) var(--app-padding-left);
-  background: var(--background-primary-main);
+  justify-content: space-between;
+  gap: toRem(16);
+  padding: toRem(24) toRem(192) toRem(24) toRem(192);
+  background: var(--background-primary-light);
   border-bottom: var(--border-primary-main);
 
   @include respond-to(tablet) {
@@ -46,15 +47,12 @@ import AppButton from '@/common/AppButton.vue'
   }
 }
 
-.app-navbar__link {
-  opacity: 0.25;
+.app-navbar__monogram {
+  width: toRem(40);
+  height: toRem(40);
+}
 
-  &:first-child {
-    margin-left: auto;
-  }
-
-  &.router-link-active {
-    opacity: 1;
-  }
+.app-navbar__address {
+  color: var(--text-secondary-main);
 }
 </style>

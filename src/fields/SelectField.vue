@@ -1,117 +1,27 @@
-<template>
-  <div :class="selectFieldClasses">
-    <div ref="selectElement" class="select-field__select-wrp">
-      <div class="select-field__select-head-wrp">
-        <button
-          type="button"
-          class="select-field__select-head"
-          @click="toggleDropdown"
-        >
-          <template v-if="$slots.head && !!modelValue">
-            <slot
-              name="head"
-              :select-field="{
-                select,
-                isOpen: isDropdownOpen,
-                close: closeDropdown,
-                open: openDropdown,
-                toggle: toggleDropdown,
-              }"
-            />
-          </template>
-          <template v-else>
-            <template v-if="modelValue">
-              {{ modelValue }}
-            </template>
-            <template v-else-if="!label && placeholder">
-              <span class="select-field__placeholder">
-                {{ props.placeholder }}
-              </span>
-            </template>
-          </template>
-          <icon
-            :class="[
-              'select-field__select-head-indicator',
-              {
-                'select-field__select-head-indicator--open': isDropdownOpen,
-              },
-            ]"
-            :name="$icons.arrowDown"
-          />
-        </button>
-        <label
-          v-if="label"
-          class="select-field__label"
-          :for="`select-field--${uid}`"
-        >
-          {{ label }}
-        </label>
-      </div>
-      <transition name="select-field__select-dropdown">
-        <div v-if="isDropdownOpen" class="select-field__select-dropdown">
-          <template v-if="$slots.default">
-            <slot
-              :select-field="{
-                select,
-                isOpen: isDropdownOpen,
-                close: closeDropdown,
-                open: openDropdown,
-                toggle: toggleDropdown,
-              }"
-            />
-          </template>
-          <template v-else-if="valueOptions?.length">
-            <button
-              :class="[
-                'select-field__select-dropdown-item',
-                {
-                  'select-field__select-dropdown-item--active':
-                    modelValue === option,
-                },
-              ]"
-              type="button"
-              v-for="(option, idx) in valueOptions"
-              :key="`[${idx}] ${option}`"
-              @click="select(option)"
-            >
-              {{ option }}
-            </button>
-          </template>
-        </div>
-      </transition>
-    </div>
-    <transition
-      name="select-field__err-msg-transition"
-      @enter="setHeightCSSVar"
-      @before-leave="setHeightCSSVar"
-    >
-      <span v-if="errorMessage" class="select-field__err-msg">
-        {{ errorMessage }}
-      </span>
-      <span v-else-if="note" class="select-field__note">
-        {{ note }}
-      </span>
-    </transition>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { Icon } from '@/common'
 
+import {
+  computed,
+  getCurrentInstance,
+  onMounted,
+  ref,
+  useAttrs,
+  watch,
+} from 'vue'
+import { useRouter } from '@/router'
 import { onClickOutside } from '@vueuse/core'
-import { computed, onMounted, ref, useAttrs, watch } from 'vue'
-import { onBeforeRouteUpdate } from 'vue-router'
-import { v4 as uuidv4 } from 'uuid'
+
+type SCHEMES = 'primary' | 'secondary'
 
 const props = withDefaults(
   defineProps<{
-    scheme?: 'primary'
+    scheme?: SCHEMES
     modelValue: string | number
     valueOptions?: string[] | number[]
     label?: string
     placeholder?: string
     errorMessage?: string
-    note?: string
   }>(),
   {
     scheme: 'primary',
@@ -120,7 +30,6 @@ const props = withDefaults(
     label: '',
     placeholder: ' ',
     errorMessage: '',
-    note: '',
   },
 )
 
@@ -133,9 +42,11 @@ const attrs = useAttrs()
 const selectElement = ref<HTMLDivElement>()
 
 const isDropdownOpen = ref(false)
-const uid = uuidv4()
+const uid = getCurrentInstance()?.uid
 
-onBeforeRouteUpdate(() => {
+const router = useRouter()
+
+router.afterEach(() => {
   closeDropdown()
 })
 
@@ -159,8 +70,8 @@ const selectFieldClasses = computed(() => ({
   [`select-field--${props.scheme}`]: true,
 }))
 
-const setHeightCSSVar = (element: Element) => {
-  ;(element as HTMLElement).style.setProperty(
+const setHeightCSSVar = (element: HTMLElement) => {
+  element.style.setProperty(
     '--field-error-msg-height',
     `${element.scrollHeight}px`,
   )
@@ -203,6 +114,104 @@ watch(
 )
 </script>
 
+<template>
+  <div :class="selectFieldClasses">
+    <div ref="selectElement" class="select-field__select-wrp">
+      <div class="select-field__select-head-wrp">
+        <button
+          type="button"
+          class="select-field__select-head"
+          @click="toggleDropdown"
+        >
+          <template v-if="$slots.head && !!modelValue">
+            <slot
+              name="head"
+              :select-field="{
+                select,
+                isOpen: isDropdownOpen,
+                close: closeDropdown,
+                open: openDropdown,
+                toggle: toggleDropdown,
+              }"
+            />
+          </template>
+          <template v-else>
+            <template v-if="modelValue">
+              {{ modelValue }}
+            </template>
+            <template v-else-if="!label">
+              <span class="select-field__placeholder">
+                {{ props.placeholder }}
+              </span>
+            </template>
+          </template>
+          <icon
+            :class="[
+              'select-field__select-head-indicator',
+              {
+                'select-field__select-head-indicator--open': isDropdownOpen,
+              },
+            ]"
+            :name="$icons.chevronDown"
+          />
+        </button>
+        <span
+          class="select-field__focus-indicator"
+          v-if="scheme === 'secondary'"
+        />
+        <label
+          v-if="label"
+          class="select-field__label"
+          :for="`select-field--${uid}`"
+        >
+          {{ label }}
+        </label>
+      </div>
+      <transition name="select-field__select-dropdown">
+        <div v-if="isDropdownOpen" class="select-field__select-dropdown">
+          <template v-if="$slots.default">
+            <slot
+              :select-field="{
+                select,
+                isOpen: isDropdownOpen,
+                close: closeDropdown,
+                open: openDropdown,
+                toggle: toggleDropdown,
+              }"
+            />
+          </template>
+          <template v-else-if="valueOptions.length">
+            <button
+              :class="[
+                'select-field__select-dropdown-item',
+                {
+                  'select-field__select-dropdown-item--active':
+                    modelValue === option,
+                },
+              ]"
+              type="button"
+              v-for="(option, idx) in valueOptions"
+              :key="`[${idx}] ${option}`"
+              @click="select(option)"
+            >
+              {{ option }}
+            </button>
+          </template>
+        </div>
+      </transition>
+    </div>
+    <transition
+      name="select-field__err-msg-transition"
+      @enter="setHeightCSSVar"
+      @before-leave="setHeightCSSVar"
+    >
+      <span v-if="errorMessage" class="select-field__err-msg">
+        {{ errorMessage }}
+      </span>
+    </transition>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 $z-local-index: 2;
 
@@ -240,6 +249,11 @@ $z-local-index: 2;
 
   transition-property: all;
 
+  .select-field--secondary & {
+    background: none;
+    padding: 0;
+  }
+
   .select-field--error & {
     color: var(--field-error);
   }
@@ -253,6 +267,10 @@ $z-local-index: 2;
 
   .select-field--open & {
     color: var(--primary-main);
+  }
+
+  .select-field--label-active.select-field--secondary & {
+    transform: translateY(50%);
   }
 }
 
@@ -317,16 +335,39 @@ $z-local-index: 2;
     @include field-border;
   }
 
+  .select-field--secondary & {
+    position: relative;
+    background: var(--background-secondary-main);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
+      0 toRem(2) 0 0 var(--field-border);
+    padding: calc(var(--field-padding-top) + #{toRem(12)})
+      var(--field-padding-right) var(--field-padding-bottom)
+      var(--field-padding-left);
+  }
+
   .select-field--error.select-field--primary & {
     box-shadow: inset 0 0 0 toRem(50) var(--field-bg-primary),
       0 0 0 toRem(1) var(--field-error);
     border-color: var(--field-error);
   }
 
+  .select-field--error.select-field--secondary & {
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
+      0 toRem(2) 0 0 var(--field-error);
+  }
+
   .select-field--open.select-field--primary & {
     box-shadow: inset 0 0 0 toRem(50) var(--field-bg-primary),
       0 0 0 toRem(2) var(--primary-main);
     border-color: var(--primary-main);
+  }
+
+  .select-field--open.select-field--secondary & {
+    & + .select-field__focus-indicator {
+      &:after {
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -343,10 +384,10 @@ $z-local-index: 2;
   top: 50%;
   right: var(--field-padding-right);
   transform: translateY(-50%);
+  transition: transform 0.1s ease-in-out;
   width: toRem(18);
   height: toRem(18);
   color: var(--field-text);
-  transition: var(--field-transition-duration) ease-in-out;
 
   &--open {
     transform: translateY(-50%) rotate(180deg);
@@ -358,15 +399,15 @@ $z-local-index: 2;
   flex-direction: column;
   position: absolute;
   overflow: hidden auto;
-  top: 110%;
+  top: 105%;
   right: 0;
   width: 100%;
   max-height: 500%;
   z-index: $z-local-index;
-  background: var(--white);
+  background: var(--field-bg-secondary);
   box-shadow: 0 toRem(1) toRem(2) rgba(var(--black-rgb), 0.3),
     0 toRem(2) toRem(6) toRem(2) rgba(var(--black-rgb), 0.15);
-  border-radius: toRem(14);
+  border-radius: toRem(4);
 }
 
 .select-field__select-dropdown-enter-active {
@@ -394,24 +435,20 @@ $z-local-index: 2;
 .select-field__select-dropdown-item {
   text-align: left;
   width: 100%;
-  padding: toRem(16);
+  padding: toRem(8) var(--field-padding-right) toRem(8)
+    var(--field-padding-left);
 
   &:hover {
-    background: var(--background-secondary-main);
+    background: rgba(var(--primary-dark-rgb), 0.15);
   }
 
   &--active {
-    background: var(--background-primary-main);
+    background: rgba(var(--primary-main-rgb), 0.25);
   }
 }
 
-.select-field__err-msg,
-.select-field__note {
+.select-field__err-msg {
   @include field-error;
-}
-
-.select-field__note {
-  color: var(--text-primary-light);
 }
 
 .select-field__err-msg-transition-enter-active {

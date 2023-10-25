@@ -1,16 +1,7 @@
-import type { ICON_NAMES } from '@/enums'
-
-export type CommonNotificationTypes =
-  | 'success'
-  | 'error'
-  | 'warning'
-  | 'info'
-  | 'default'
+import { ICON_NAMES } from '@/enums'
 
 export type NotificationObjectPayload = {
   title?: string
   message: string
-  iconName?: ICON_NAMES // FIXME
+  iconName?: typeof ICON_NAMES | unknown
 }
-
-export type NotificationPayload = string | NotificationObjectPayload
